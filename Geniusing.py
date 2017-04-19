@@ -47,7 +47,7 @@ http = requests.Session()
 http.headers.update({'Authorization': 'Bearer {0}'.format(os.environ['GENIUS_ACCESS_TOKEN'])})
 
 
-# get_artist_songs will get all the song metadata and lyrics for a given artist name
+# `get_artist_songs` will get all the song metadata and lyrics for a given artist name
 
 # In[ ]:
 
@@ -57,7 +57,7 @@ def get_artist_songs(name, primary=False):
         yield song
 
 
-# get_artist_id will get the Genius identifier for a given artist
+# `get_artist_id` will get the Genius identifier for a given artist name
 
 # In[ ]:
 
@@ -74,7 +74,7 @@ def get_artist_id(name):
     return None
 
 
-# get_songs will go and get all the songs and lyrics for a given artist id. When the `primary` parameter is set to `True` only songs where the artist is the primary artist will be returned.
+# `get_songs` will go and get all the songs and lyrics for a given artist id. When the `primary` parameter is set to `True` only songs where the artist is the primary artist will be returned.
 
 # In[ ]:
 
@@ -92,7 +92,7 @@ def get_songs(artist_id, primary=False):
         page += 1
 
 
-# get_song will fetch the metadata for a particular song using the song identifier, and also get the lyrics for that song.
+# `get_song` will fetch the metadata for a particular song using the song identifier, and also get the lyrics for that song.
 
 # In[ ]:
 
@@ -116,7 +116,7 @@ def slug(s):
     return re.sub("[/ ,]", '-', s)
 
 
-# write_lyrics will write the lyrics for a song to the filesystem using the artist name and the song title to determine the filename.
+# `write_lyrics` will write the lyrics for a song to the filesystem using the artist name and the song title to determine the filename.
 
 # In[ ]:
 
@@ -131,7 +131,7 @@ def write_lyrics(song):
     fh.close()
 
 
-# This is where all the work is coordinated. For each artist we go get the song metadata and write it to a CSV.
+# This is where all the work is coordinated. For each artist we go get the song metadata and write it to a CSV. In addition the lyrics for each song are written to the filesystem as a separate file.
 
 # In[ ]:
 
