@@ -14,10 +14,10 @@ input_data = csv.DictReader(open("songs.csv"))
 for row in input_data:
     n1 = row[col1]
     for n2 in row[col2].split(","):
-        if not col2:
+        if not n2 or n1 == n2:
             continue
-        g.add_node(n1)
-        g.add_node(n2)
+        g.add_node(n1, {type: 'artist'})
+        g.add_node(n2, {type: 'producer'})
         g.add_edge(n1, n2)
         e = g[n1][n2]
         e['weight'] = e.get('weight', 0) + 1

@@ -5,7 +5,7 @@
 # 
 # To use the notebook you will need to set `GENIUS_ACCESS_TOKEN` in your environment before starting Jupyter. To easily get your token go over to the [Genius API documentation](https://docs.genius.com/) and click on the *Authenticate with the Docs App to try* button. This should result in you seeing your key displayed in the page next to *Authorization: Bearer*. If you don't want to set it in your environment you can always put it inline in the notebook.
 
-# In[1]:
+# In[7]:
 
 import os
 import re
@@ -16,40 +16,52 @@ import time
 import requests
 
 
-# In[2]:
+# In[8]:
 
 ARTISTS = [
-    'The Roots',
-    'Eve',
-    'DJ Jazzy Jeff & The Fresh Prince',
-    'Ludacris',
-    'T.I.',
-    'Kanye West',
-    'Chance the Rapper',
-    'Common',
-    'Gucci Mane',
-    'Migos',
-    'OutKast',
-    'Twista',
-    'Crucial Conflict',
-    'Lupe Fiasco',
-    'Digital Underground',
+    #'The Roots',
+    #'Eve',
+    #'DJ Jazzy Jeff & The Fresh Prince',
+    #'Ludacris',
+    #'T.I.',
+    #'Kanye West',
+    #'Chance the Rapper',
+    #'Common',
+    #'Gucci Mane',
+    #'Migos',
+    #'OutKast',
+    #'Twista',
+    #'Crucial Conflict',
+    #'Lupe Fiasco',
+    #'Digital Underground',
     '2Pac',
     'Trouble Funk'
 ]
 
 
-# Create an HTTP session using the `GENIUS_ACCESS_TOKEN` that is set in the environment.
+# Create an HTTP session using the `GENIUS_ACCESS_TOKEN` that is set in the environment. Also create a function to do the HTTP GET request which will retry a certain number of times.
 
-# In[3]:
+# In[9]:
 
 http = requests.Session()
 http.headers.update({'Authorization': 'Bearer {0}'.format(os.environ['GENIUS_ACCESS_TOKEN'])})
 
+def get(url, params=None, tries=10):
+    resp = http.get(url, params=params)
+    if resp.status_code == 200:
+        try:
+            return resp.json()
+        except:
+            return get(url, params=params, tries=tries-1)
+    elif tries > 0:
+        return get(url, params=params, tries=tries-1)
+    else:
+        raise Exception("HTTP Error: %s" % resp)
+
 
 # `get_artist_songs` will get all the song metadata and lyrics for a given artist name
 
-# In[4]:
+# In[10]:
 
 def get_artist_songs(name, primary=False):
     artist_id = get_artist_id(name)
@@ -59,15 +71,13 @@ def get_artist_songs(name, primary=False):
 
 # `get_artist_id` will get the Genius identifier for a given artist name
 
-# In[5]:
+# In[11]:
 
 def get_artist_id(name):
     page = 1
     while True:
-        r = http.get('https://api.genius.com/search', params={'q': name, 'page': page})
-        if r.status_code != 200:
-            return None
-        for hit in r.json()['response'].get('hits', []):
+        resp = get('https://api.genius.com/search', params={'q': name, 'page': page})
+        for hit in resp['response'].get('hits', []):
             if hit['result']['primary_artist']['name'].lower() == name.lower():
                 return hit['result']['primary_artist']['id']
         page += 1
@@ -76,15 +86,14 @@ def get_artist_id(name):
 
 # `get_songs` will go and get all the songs and lyrics for a given artist id. When the `primary` parameter is set to `True` only songs where the artist is the primary artist will be returned.
 
-# In[6]:
+# In[12]:
 
 def get_songs(artist_id, primary=False):
     page = 1
     while True:
-        r = http.get('https://api.genius.com/artists/{0}/songs'.format(artist_id), params={'page': page})
-        resp = r.json()['response']
-        if 'songs' in resp and len(resp['songs']) != 0:
-            for song in resp['songs']:
+        resp = get('https://api.genius.com/artists/{0}/songs'.format(artist_id), params={'page': page})
+        if 'songs' in resp['response'] and len(resp['response']['songs']) != 0:
+            for song in resp['response']['songs']:
                 if song['primary_artist']['id'] == artist_id or not primary:
                     yield get_song(song['id'])
         else:
@@ -94,23 +103,23 @@ def get_songs(artist_id, primary=False):
 
 # `get_song` will fetch the metadata for a particular song using the song identifier, and also get the lyrics for that song.
 
-# In[7]:
+# In[15]:
 
 def get_song(song_id):
-    r = http.get('https://api.genius.com/songs/{0}'.format(song_id))
-    song = r.json()['response'].get('song')
+    resp = get('https://api.genius.com/songs/{0}'.format(song_id))
+    song = resp['response']['song']
     song['lyrics'] = get_lyrics(song['url'])
     return song
 
 
-# In[8]:
+# In[16]:
 
 def get_lyrics(url):
-    doc = bs4.BeautifulSoup(requests.get(url).text, 'lxml')
+    doc = bs4.BeautifulSoup(http.get(url).text, 'lxml')
     return [line.text.strip() for line in doc.select(".lyrics a")]
 
 
-# In[9]:
+# In[17]:
 
 def slug(s):
     return re.sub("[/ ,]", '-', s)
@@ -118,7 +127,7 @@ def slug(s):
 
 # `write_lyrics` will write the lyrics for a song to the filesystem using the artist name and the song title to determine the filename.
 
-# In[1]:
+# In[14]:
 
 def write_lyrics(song):
     if not song['lyrics']:
@@ -133,7 +142,7 @@ def write_lyrics(song):
     fh.close()
 
 
-# In[25]:
+# In[13]:
 
 def samples(song):
     artists = []
@@ -142,14 +151,13 @@ def samples(song):
             for sampled_song in rel['songs']:
                 artists.append(sampled_song['primary_artist']['name'])
     return artists
-            
 
 
 # This is where all the work is coordinated. For each artist we go get the song metadata and write it to a CSV. In addition the lyrics for each song are written to the filesystem as a separate file.
 
-# In[ ]:
+# In[6]:
 
-fh = open('songs.csv', 'w')
+fh = open('songs.csv', 'a')
 songs_file = csv.writer(fh)
 songs_file.writerow(["ID", "Title", "Artist", "URL", "Producers", "Featured Artists"])
 
@@ -169,7 +177,12 @@ for artist_name in ARTISTS:
             sampled_artists,
         ])
         write_lyrics(song)
-        time.sleep(0.25)
+        time.sleep(0.5)
 
 fh.close()
+
+
+# In[ ]:
+
+
 
