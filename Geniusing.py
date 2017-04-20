@@ -118,9 +118,11 @@ def slug(s):
 
 # `write_lyrics` will write the lyrics for a song to the filesystem using the artist name and the song title to determine the filename.
 
-# In[10]:
+# In[1]:
 
 def write_lyrics(song):
+    if not song['lyrics']:
+        return
     dir_name = "lyrics/" + song['primary_artist']['name']
     if not os.path.isdir(dir_name):
         os.mkdir(dir_name)
@@ -129,11 +131,6 @@ def write_lyrics(song):
     for line in song['lyrics']:
         fh.write(line + "\n")
     fh.close()
-
-
-# In[12]:
-
-song = next(get_artist_songs("Kanye West"))
 
 
 # In[25]:
