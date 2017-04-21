@@ -5,7 +5,7 @@
 # 
 # To use the notebook you will need to set `GENIUS_ACCESS_TOKEN` in your environment before starting Jupyter. To easily get your token go over to the [Genius API documentation](https://docs.genius.com/) and click on the *Authenticate with the Docs App to try* button. This should result in you seeing your key displayed in the page next to *Authorization: Bearer*. If you don't want to set it in your environment you can always put it inline in the notebook.
 
-# In[7]:
+# In[ ]:
 
 import os
 import re
@@ -16,7 +16,7 @@ import time
 import requests
 
 
-# In[8]:
+# In[ ]:
 
 ARTISTS = [
     #'The Roots',
@@ -41,7 +41,7 @@ ARTISTS = [
 
 # Create an HTTP session using the `GENIUS_ACCESS_TOKEN` that is set in the environment. Also create a function to do the HTTP GET request which will retry a certain number of times.
 
-# In[9]:
+# In[ ]:
 
 http = requests.Session()
 http.headers.update({'Authorization': 'Bearer {0}'.format(os.environ['GENIUS_ACCESS_TOKEN'])})
@@ -61,7 +61,7 @@ def get(url, params=None, tries=10):
 
 # `get_artist_songs` will get all the song metadata and lyrics for a given artist name
 
-# In[10]:
+# In[ ]:
 
 def get_artist_songs(name, primary=False):
     artist_id = get_artist_id(name)
@@ -71,7 +71,7 @@ def get_artist_songs(name, primary=False):
 
 # `get_artist_id` will get the Genius identifier for a given artist name
 
-# In[11]:
+# In[ ]:
 
 def get_artist_id(name):
     page = 1
@@ -86,7 +86,7 @@ def get_artist_id(name):
 
 # `get_songs` will go and get all the songs and lyrics for a given artist id. When the `primary` parameter is set to `True` only songs where the artist is the primary artist will be returned.
 
-# In[12]:
+# In[ ]:
 
 def get_songs(artist_id, primary=False):
     page = 1
@@ -103,7 +103,7 @@ def get_songs(artist_id, primary=False):
 
 # `get_song` will fetch the metadata for a particular song using the song identifier, and also get the lyrics for that song.
 
-# In[15]:
+# In[ ]:
 
 def get_song(song_id):
     resp = get('https://api.genius.com/songs/{0}'.format(song_id))
@@ -112,14 +112,14 @@ def get_song(song_id):
     return song
 
 
-# In[16]:
+# In[ ]:
 
 def get_lyrics(url):
     doc = bs4.BeautifulSoup(http.get(url).text, 'lxml')
     return [line.text.strip() for line in doc.select(".lyrics a")]
 
 
-# In[17]:
+# In[ ]:
 
 def slug(s):
     return re.sub("[/ ,]", '-', s)
@@ -127,7 +127,7 @@ def slug(s):
 
 # `write_lyrics` will write the lyrics for a song to the filesystem using the artist name and the song title to determine the filename.
 
-# In[14]:
+# In[ ]:
 
 def write_lyrics(song):
     if not song['lyrics']:
@@ -142,7 +142,7 @@ def write_lyrics(song):
     fh.close()
 
 
-# In[13]:
+# In[ ]:
 
 def samples(song):
     artists = []
@@ -155,7 +155,7 @@ def samples(song):
 
 # This is where all the work is coordinated. For each artist we go get the song metadata and write it to a CSV. In addition the lyrics for each song are written to the filesystem as a separate file.
 
-# In[6]:
+# In[ ]:
 
 fh = open('songs.csv', 'a')
 songs_file = csv.writer(fh)
