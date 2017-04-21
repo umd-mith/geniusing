@@ -153,12 +153,6 @@ def samples(song):
     return artists
 
 
-# In[15]:
-
-#print(json.dumps(next(get_artist_songs("Kanye West")), indent=2))
-print(next(get_artist_songs("Kanye West"))['release_date'])
-
-
 # This is where all the work is coordinated. For each artist we go get the song metadata and write it to a CSV. In addition the lyrics for each song are written to the filesystem as a separate file.
 
 # In[16]:
