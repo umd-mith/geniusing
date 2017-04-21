@@ -1,5 +1,19 @@
 #!/usr/bin/env python
 
+"""
+This program will extract an edge list from the songs.csv file for viewing
+in a graph utility like Cytoscape or Gephi.
+
+    ./edge_list.py Artist Producer
+
+will write a file:
+
+    artist-producer.csv
+
+"""
+
+
+
 import sys
 import csv
 import networkx
@@ -22,10 +36,8 @@ for row in input_data:
         e = g[n1][n2]
         e['weight'] = e.get('weight', 0) + 1
 
-writer = csv.DictWriter(
-    open("%s-%s.csv" % (col1, col2), "w"),
-    fieldnames=[col1, col2, 'weight']
-)
+output = open(("%s-%s.csv" % (col1, col2)).lower(), "w")
+writer = csv.DictWriter(output, fieldnames=[col1, col2, 'weight'])
 writer.writeheader()
 
 for n1, n2 in g.edges():
