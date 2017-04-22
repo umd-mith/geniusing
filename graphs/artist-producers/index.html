@@ -1,14 +1,85 @@
 <html>
 <head>
+  <title>hip-hop artists and their producers</title>
+  <style>
+  #explanation {
+    width: 200px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #eee;
+    padding: 10px;
+  }
+  #viewer {
+    position: fixed;
+    top: 0;
+    left: 220;
+  }
+  h3 {
+    font-weight: bold;
+    font-size: 12pt;
+  }
+  </style>
 	<script src="openseadragon/openseadragon.min.js"></script>
 </head>
 
-<div id="openseadragon1" style="width: 100%; height: 800px;"></div>
+<body>
+
+<section id="explanation">
+
+<p>The network below is of the relationships between a selected number of hip hop artists:</p>
+
+<h3>Chicago</h3>
+
+<ul>
+  <li>Chance the Rapper</li>
+  <li>Common</li>
+  <li>Twista</li>
+  <li>Crucial Conflict</li>
+  <li>Lupe Fiasco</li>
+</ul>
+
+<h3>Atlanta</h3>
+
+<ul>
+  <li>Ludacris</li>
+  <li>T.I.</li>
+  <li>Kanye West</li>
+  <li>Gucci Mane</li>
+  <li>Migos</li>
+  <li>OutKast</li>
+</ul>
+
+<h3>Philadelphia</h3>
+
+<ul>
+  <li>The Roots</li>
+  <li>Eve</li>
+  <li>DJ Jazzy Jeff and The Fresh Prince</li>
+</ul>
+
+<h3>Oakland</h3>
+
+<ul>
+  <li>Digital Underground</li>
+  <li>2Pac</li>
+</ul>
+
+<h3>DC</h3>
+
+<ul>
+  <li>Trouble Funk</li>
+</ul>
+
+</section>
+
+<div id="viewer" style="width: 100%; height: 800px;"></div>
 <script type="text/javascript">
     var viewer = OpenSeadragon({
-        id: "openseadragon1",
+        id: "viewer",
         prefixUrl: "openseadragon/images/",
-        //tileSources: "graph.dzi"
+        defaultZoomLevel: 4,
+        minZoomLevel: 1,
         tileSources: {
           type: "image",
           url: "graph.png",
