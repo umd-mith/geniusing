@@ -9,10 +9,10 @@ other artists they work with.
 
 Some example results:
 
-* [artists and their producers in Philadelphia, Atlanta and Chicago](https://umd-mith.github.io/geniusify/graphs/producers/)
-* [artists and their producers in Atlanta](https://umd-mith.github.io/geniusify/graphs/atlanta)
-* [artists and their producers in Atlanta from Wikipedia](https://umd-mith.github.io/geniusify/graphs/atlanta-wikipedia)
-* [artists and their producers in Chicago from Wikipedia](https://umd-mith.github.io/geniusify/graphs/chicago-wikipedia)
+* [artists and their producers in Philadelphia, Atlanta and Chicago](https://umd-mith.github.io/geniusing/graphs/producers/)
+* [artists and their producers in Atlanta](https://umd-mith.github.io/geniusing/graphs/atlanta)
+* [artists and their producers in Atlanta from Wikipedia](https://umd-mith.github.io/geniusing/graphs/atlanta-wikipedia)
+* [artists and their producers in Chicago from Wikipedia](https://umd-mith.github.io/geniusing/graphs/chicago-wikipedia)
 
 
 [Anaconda]: https://www.continuum.io/downloads
