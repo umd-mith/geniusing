@@ -18,12 +18,13 @@ import sys
 import csv
 import networkx
 
-col1 = sys.argv[1]
-col2 = sys.argv[2]
+csv_file = sys.argv[1]
+col1 = sys.argv[2]
+col2 = sys.argv[3]
 
 g = networkx.DiGraph()
 
-input_data = csv.DictReader(open("songs.csv"))
+input_data = csv.DictReader(open(csv_file))
 
 for row in input_data:
     n1 = row[col1]
@@ -36,8 +37,7 @@ for row in input_data:
         e = g[n1][n2]
         e['weight'] = e.get('weight', 0) + 1
 
-output = open(("%s-%s.csv" % (col1, col2)).lower(), "w")
-writer = csv.DictWriter(output, fieldnames=[col1, col2, 'weight'])
+writer = csv.DictWriter(sys.stdout, fieldnames=[col1, col2, 'weight'])
 writer.writeheader()
 
 for n1, n2 in g.edges():
